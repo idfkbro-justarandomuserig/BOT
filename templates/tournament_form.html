@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('tournaments') }}">Tournaments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% if tournament %}Edit{% else %}New{% endif %} Tournament</li>
+        </ol>
+    </nav>
+    
+    <div class="card border-0 bg-dark shadow-sm">
+        <div class="card-header bg-dark">
+            <h5 class="card-title mb-0">{% if tournament %}Edit{% else %}Create New{% endif %} Tournament</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('edit_tournament', tournament_id=tournament.id) if tournament else url_for('new_tournament') }}">
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="name" class="form-label">Tournament Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ tournament.name if tournament else '' }}" required>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="game_type" class="form-label">Game Type</label>
+                        <select class="form-select" id="game_type" name="game_type" required>
+                            {% set game_types = ['slots', 'dice', 'wheel', 'redblack', 'custom'] %}
+                            {% for game in game_types %}
+                                <option value="{{ game }}" {% if tournament and tournament.game_type == game %}selected{% endif %}>
+                                    {{ game|title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ tournament.description if tournament else '' }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="datetime-local" class="form-control" id="start_date" name="start_date" 
+                               value="{{ tournament.start_date.strftime('%Y-%m-%dT%H:%M') if tournament else '' }}" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="datetime-local" class="form-control" id="end_date" name="end_date" 
+                               value="{{ tournament.end_date.strftime('%Y-%m-%dT%H:%M') if tournament else '' }}" required>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="entry_fee" class="form-label">Entry Fee (coins)</label>
+                        <input type="number" class="form-control" id="entry_fee" name="entry_fee" 
+                               value="{{ tournament.entry_fee if tournament else 0 }}" min="0" required>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="prize_pool" class="form-label">Initial Prize Pool (coins)</label>
+                        <input type="number" class="form-control" id="prize_pool" name="prize_pool" 
+                               value="{{ tournament.prize_pool if tournament else 0 }}" min="0" required>
+                        <div class="form-text text-muted">Entry fees will add to the prize pool</div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="max_participants" class="form-label">Max Participants</label>
+                        <input type="number" class="form-control" id="max_participants" name="max_participants" 
+                               value="{{ tournament.max_participants if tournament else 16 }}" min="2" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status" required>
+                        {% set statuses = ['upcoming', 'active', 'completed', 'cancelled'] %}
+                        {% for status in statuses %}
+                            <option value="{{ status }}" {% if tournament and tournament.status == status %}selected{% endif %}>
+                                {{ status|title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('tournaments') }}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if tournament %}Update{% else %}Create{% endif %} Tournament
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    {% if tournament %}
+    <div class="card border-0 bg-dark shadow-sm mt-4">
+        <div class="card-header bg-dark">
+            <h5 class="card-title mb-0 text-warning">Tournament Preview</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">{{ tournament.name }}</h4>
+                <span class="badge 
+                    {% if tournament.status == 'upcoming' %}bg-info
+                    {% elif tournament.status == 'active' %}bg-success
+                    {% elif tournament.status == 'completed' %}bg-secondary
+                    {% else %}bg-warning{% endif %}">
+                    {{ tournament.status|title }}
+                </span>
+            </div>
+            
+            <p class="mb-3">{{ tournament.description }}</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="border border-secondary rounded p-3 text-center">
+                        <h6 class="text-muted mb-1">Game Type</h6>
+                        <h5>{{ tournament.game_type|title }}</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="border border-secondary rounded p-3 text-center">
+                        <h6 class="text-muted mb-1">Entry Fee</h6>
+                        <h5>{{ tournament.entry_fee }} coins</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="border border-secondary rounded p-3 text-center">
+                        <h6 class="text-muted mb-1">Prize Pool</h6>
+                        <h5>{{ tournament.prize_pool }} coins</h5>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Start Date:</strong> {{ tournament.start_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>End Date:</strong> {{ tournament.end_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+            </div>
+            
+            <p class="mt-2 mb-0"><strong>Max Participants:</strong> {{ tournament.max_participants }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

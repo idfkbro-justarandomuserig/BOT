@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('users') }}">Users</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ user_id }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- User info card -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 bg-dark shadow-sm">
+                <div class="card-header bg-dark">
+                    <h5 class="card-title mb-0">User Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary bg-opacity-10 p-4 rounded-circle me-3">
+                            <span data-feather="user" style="width: 36px; height: 36px;"></span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">User ID: {{ user_id }}</h4>
+                            <small class="text-muted">Discord User</small>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted mb-3">Economy Details</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-dark border-primary">
+                                <div class="card-body">
+                                    <h6 class="card-title text-primary"><span data-feather="dollar-sign" class="me-2"></span>Balance</h6>
+                                    <h3 class="display-6">{{ user.get('balance', 0) | int }}</h3>
+                                    <small class="text-muted">coins</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-dark border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success"><span data-feather="credit-card" class="me-2"></span>Savings</h6>
+                                    <h3 class="display-6">{{ user.get('savings', 0) | int }}</h3>
+                                    <small class="text-muted">coins</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted mt-3 mb-3">Additional Information</h6>
+                    <table class="table table-dark">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%">Last Daily Claim</th>
+                                <td>
+                                    {% if user.get('last_daily_claim') %}
+                                        {{ user.get('last_daily_claim').replace('T', ' ').split('.')[0] }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Savings PIN</th>
+                                <td>
+                                    {% if user.get('pin') %}
+                                        <span class="badge bg-success">Set</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Not Set</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inventory card -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 bg-dark shadow-sm">
+                <div class="card-header bg-dark">
+                    <h5 class="card-title mb-0">User Inventory</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="text-muted">Capacity: {{ inventory.get('capacity', 20) }}</h6>
+                        <span class="badge bg-info">{{ inventory.get('items', []) | length }} / {{ inventory.get('capacity', 20) }}</span>
+                    </div>
+                    
+                    <div class="list-group">
+                        {% if inventory.get('items', []) %}
+                            {% for item in inventory.get('items', []) %}
+                                <div class="list-group-item bg-dark border-secondary d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="me-2 rarity-{{ item.rarity|default('common') }}">●</span>
+                                        <strong>{{ item.name }}</strong>
+                                        {% if item.quantity and item.quantity > 1 %}
+                                            <span class="badge bg-secondary ms-2">{{ item.quantity }}</span>
+                                        {% endif %}
+                                        <p class="text-muted mb-0 small">{{ item.description|default('') }}</p>
+                                    </div>
+                                    <div>
+                                        {% if item.usable %}
+                                            <span class="badge bg-success">Usable</span>
+                                        {% endif %}
+                                        {% if not item.tradable %}
+                                            <span class="badge bg-danger">Not Tradable</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <span data-feather="package" style="width: 48px; height: 48px; opacity: 0.3;"></span>
+                                <p class="text-muted mt-3">No items in inventory</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transaction history -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-0 bg-dark shadow-sm">
+                <div class="card-header bg-dark">
+                    <h5 class="card-title mb-0">Transaction History</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center py-5">
+                        Transaction history will be implemented in a future update.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

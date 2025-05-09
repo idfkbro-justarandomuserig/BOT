@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('items') }}">Items</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% if item %}Edit{% else %}New{% endif %} Item</li>
+        </ol>
+    </nav>
+    
+    <div class="card border-0 bg-dark shadow-sm">
+        <div class="card-header bg-dark">
+            <h5 class="card-title mb-0">{% if item %}Edit{% else %}Create New{% endif %} Item</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('edit_item', item_id=item.id) if item else url_for('new_item') }}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ item.name if item else '' }}" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="rarity" class="form-label">Rarity</label>
+                        <select class="form-select" id="rarity" name="rarity" required>
+                            {% set rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary'] %}
+                            {% for rarity in rarities %}
+                                <option value="{{ rarity }}" {% if item and item.rarity == rarity %}selected{% endif %}>
+                                    {{ rarity|title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ item.description if item else '' }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="icon" class="form-label">Icon (emoji or URL)</label>
+                        <input type="text" class="form-control" id="icon" name="icon" value="{{ item.icon if item else '' }}">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="effect" class="form-label">Effect</label>
+                        <input type="text" class="form-control" id="effect" name="effect" value="{{ item.effect if item else '' }}" 
+                               placeholder="e.g., +10% coins, -5% gambling costs">
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="usable" name="usable" 
+                                  {% if item and item.usable %}checked{% endif %}>
+                            <label class="form-check-label" for="usable">
+                                Usable
+                            </label>
+                            <div class="form-text text-muted">Can this item be activated by players?</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="tradable" name="tradable" 
+                                  {% if item is not defined or item.tradable %}checked{% endif %}>
+                            <label class="form-check-label" for="tradable">
+                                Tradable
+                            </label>
+                            <div class="form-text text-muted">Can this item be traded between players?</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('items') }}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if item %}Update{% else %}Create{% endif %} Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    {% if item %}
+    <div class="card border-0 bg-dark shadow-sm mt-4">
+        <div class="card-header bg-dark">
+            <h5 class="card-title mb-0 text-warning">Item Preview</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <span class="rarity-{{ item.rarity }} me-2">●</span>
+                <h4 class="mb-0">{{ item.name }}</h4>
+                {% if item.icon %}
+                <span class="ms-2">{{ item.icon }}</span>
+                {% endif %}
+            </div>
+            
+            <p class="mb-1">{{ item.description }}</p>
+            
+            <div class="mt-3">
+                {% if item.usable %}
+                <span class="badge bg-success me-2">Usable</span>
+                {% endif %}
+                {% if item.tradable %}
+                <span class="badge bg-info me-2">Tradable</span>
+                {% else %}
+                <span class="badge bg-danger me-2">Not Tradable</span>
+                {% endif %}
+                <span class="badge rarity-{{ item.rarity }}">{{ item.rarity|title }}</span>
+            </div>
+            
+            {% if item.effect %}
+            <div class="mt-3">
+                <span class="text-muted">Effect:</span> {{ item.effect }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

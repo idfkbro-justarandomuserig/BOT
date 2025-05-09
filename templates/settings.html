@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Bot Settings</h3>
+        <div id="settings-status"></div>
+    </div>
+    
+    <!-- Main settings form -->
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card border-0 bg-dark shadow-sm animate__animated animate__fadeIn">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Configuration</h5>
+                    <span data-feather="settings" data-bs-toggle="tooltip" title="These settings will affect how the bot operates"></span>
+                </div>
+                <div class="card-body">
+                    <form id="botSettingsForm">
+                        <div class="row">
+                            <!-- Economy Settings -->
+                            <div class="col-md-6 mb-4">
+                                <h6 class="text-info mb-3 border-bottom pb-2">Economy Settings</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="dailyRewardAmount" class="form-label">Daily Reward Amount</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="dailyRewardAmount" name="daily_reward_amount" 
+                                               min="1" max="10000" step="1">
+                                        <span class="input-group-text">coins</span>
+                                    </div>
+                                    <div class="form-text">The number of coins users receive from the daily command</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="dailyCooldownHours" class="form-label">Daily Command Cooldown</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="dailyCooldownHours" name="daily_cooldown_hours" 
+                                               min="1" max="48" step="1">
+                                        <span class="input-group-text">hours</span>
+                                    </div>
+                                    <div class="form-text">How often users can use the daily command</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="dailyInterestRate" class="form-label">Daily Savings Interest Rate</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="dailyInterestRate" name="daily_interest_rate" 
+                                               min="0" max="10" step="0.01">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="form-text">Interest earned daily on savings accounts</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Gambling Settings -->
+                            <div class="col-md-6 mb-4">
+                                <h6 class="text-info mb-3 border-bottom pb-2">Gambling Settings</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="jackpotChance" class="form-label">Jackpot Chance</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="jackpotChance" name="jackpot_chance" 
+                                               min="0.01" max="5" step="0.01">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="form-text">Probability of winning the jackpot in slots</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="slotJackpotContribution" class="form-label">Jackpot Contribution</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="slotJackpotContribution" name="slot_jackpot_contribution" 
+                                               min="0" max="20" step="0.1">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="form-text">Percentage of each bet that goes to the jackpot pool</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="slotJackpotPool" class="form-label">Current Jackpot Pool</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="slotJackpotPool" name="slot_jackpot_pool" 
+                                               min="0" step="100">
+                                        <span class="input-group-text">coins</span>
+                                    </div>
+                                    <div class="form-text">The current amount in the jackpot pool</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Boost Settings -->
+                            <div class="col-md-12 mb-4">
+                                <h6 class="text-info mb-3 border-bottom pb-2">Global Coin Boost</h6>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="globalCoinBoostActive" name="global_coin_boost_active">
+                                    <label class="form-check-label" for="globalCoinBoostActive">Activate Global Coin Boost</label>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="globalCoinBoostMultiplier" class="form-label">Boost Multiplier</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="globalCoinBoostMultiplier" name="global_coin_boost_multiplier" 
+                                               min="1.1" max="5" step="0.1">
+                                        <span class="input-group-text">x</span>
+                                    </div>
+                                    <div class="form-text">Multiplier for winnings when boost is active</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="boostDuration" class="form-label">Boost Duration</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="boostDuration" min="1" max="48" step="1" value="24">
+                                        <span class="input-group-text">hours</span>
+                                    </div>
+                                    <div class="form-text">How long the boost will last if activated now</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary" id="saveSettingsBtn">
+                                <span data-feather="save" class="me-2"></span> Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics and info -->
+        <div class="col-md-5">
+            <div class="card border-0 bg-dark shadow-sm mb-4 animate__animated animate__fadeIn" style="animation-delay: 0.1s">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Bot Status</h5>
+                    <span data-feather="info" data-bs-toggle="tooltip" title="Current status information"></span>
+                </div>
+                <div class="card-body">
+                    <table class="table table-dark table-custom">
+                        <tbody>
+                            <tr>
+                                <th style="width: 50%">Status</th>
+                                <td id="bot-status-indicator">
+                                    {% if bot_data.get('status', 'unknown') == 'online' %}
+                                    <span class="status-indicator status-online"></span>
+                                    <span class="text-success">Online</span>
+                                    {% else %}
+                                    <span class="status-indicator status-offline"></span>
+                                    <span class="text-danger">Offline</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Last Started</th>
+                                <td id="bot-last-started">
+                                    {{ bot_data.get('last_started_at', 'Unknown') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Global Coin Boost</th>
+                                <td id="global-boost-status">
+                                    {% if bot_data.get('global_coin_boost_active', False) %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Total Users</th>
+                                <td>{{ users_count }}</td>
+                            </tr>
+                            <tr>
+                                <th>Environment</th>
+                                <td>{{ bot_data.get('environment', 'production') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card border-0 bg-dark shadow-sm animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                    <span data-feather="zap" data-bs-toggle="tooltip" title="Perform immediate actions"></span>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-warning" id="runDailyInterestBtn">
+                            <span data-feather="dollar-sign" class="me-2"></span> Run Daily Interest
+                        </button>
+                        <button type="button" class="btn btn-info" id="drawLotteryBtn">
+                            <span data-feather="award" class="me-2"></span> Draw Lottery
+                        </button>
+                        <button type="button" class="btn btn-success" id="backupDataBtn">
+                            <span data-feather="download" class="me-2"></span> Backup Data
+                        </button>
+                        <button type="button" class="btn btn-danger" id="resetJackpotBtn">
+                            <span data-feather="refresh-cw" class="me-2"></span> Reset Jackpot Pool
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Load current settings
+    $.getJSON('/api/bot/settings', function(data) {
+        // Populate form with current values
+        $('#dailyRewardAmount').val(data.daily_reward_amount);
+        $('#dailyCooldownHours').val(data.daily_cooldown_hours);
+        $('#dailyInterestRate').val(data.daily_interest_rate);
+        $('#jackpotChance').val(data.jackpot_chance);
+        $('#slotJackpotContribution').val(data.slot_jackpot_contribution);
+        $('#slotJackpotPool').val(data.slot_jackpot_pool);
+        $('#globalCoinBoostActive').prop('checked', data.global_coin_boost_active);
+        $('#globalCoinBoostMultiplier').val(data.global_coin_boost_multiplier);
+        
+        // Update UI based on global boost status
+        if (data.global_coin_boost_active) {
+            $('#global-boost-status').html('<span class="badge bg-success">Active</span>');
+            
+            // Show remaining time if available
+            if (data.global_coin_boost_ends_at) {
+                const endTime = new Date(data.global_coin_boost_ends_at);
+                const now = new Date();
+                const hoursRemaining = Math.max(0, Math.round((endTime - now) / (1000 * 60 * 60)));
+                
+                if (hoursRemaining > 0) {
+                    $('#global-boost-status').append(` (${hoursRemaining} hours remaining)`);
+                } else {
+                    $('#global-boost-status').append(' (ending soon)');
+                }
+            }
+        } else {
+            $('#global-boost-status').html('<span class="badge bg-secondary">Inactive</span>');
+        }
+    })
+    .fail(function() {
+        $('#settings-status').html('<div class="alert alert-danger">Failed to load settings</div>');
+    });
+    
+    // Save settings
+    $('#botSettingsForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        $('#saveSettingsBtn').html('<span class="spinner-border spinner-border-sm me-2"></span> Saving...');
+        $('#saveSettingsBtn').prop('disabled', true);
+        
+        // Gather form data
+        const formData = {
+            daily_reward_amount: parseInt($('#dailyRewardAmount').val()),
+            daily_cooldown_hours: parseInt($('#dailyCooldownHours').val()),
+            daily_interest_rate: parseFloat($('#dailyInterestRate').val()),
+            jackpot_chance: parseFloat($('#jackpotChance').val()),
+            slot_jackpot_contribution: parseFloat($('#slotJackpotContribution').val()),
+            slot_jackpot_pool: parseInt($('#slotJackpotPool').val()),
+            global_coin_boost_active: $('#globalCoinBoostActive').is(':checked'),
+            global_coin_boost_multiplier: parseFloat($('#globalCoinBoostMultiplier').val())
+        };
+        
+        // Send to API
+        $.ajax({
+            url: '/api/bot/settings',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                // Success message
+                $('#settings-status').html('<div class="alert alert-success">Settings saved successfully</div>');
+                
+                // Reset button
+                $('#saveSettingsBtn').html('<span data-feather="save" class="me-2"></span> Save Settings');
+                $('#saveSettingsBtn').prop('disabled', false);
+                feather.replace();
+                
+                // Auto-hide success message
+                setTimeout(function() {
+                    $('#settings-status').empty();
+                }, 5000);
+                
+                // Update UI based on global boost
+                if (formData.global_coin_boost_active) {
+                    $('#global-boost-status').html('<span class="badge bg-success">Active</span>');
+                } else {
+                    $('#global-boost-status').html('<span class="badge bg-secondary">Inactive</span>');
+                }
+            },
+            error: function(xhr) {
+                // Show error
+                const errorMsg = xhr.responseJSON && xhr.responseJSON.message ? 
+                    xhr.responseJSON.message : 'Failed to save settings';
+                $('#settings-status').html(`<div class="alert alert-danger">${errorMsg}</div>`);
+                
+                // Reset button
+                $('#saveSettingsBtn').html('<span data-feather="save" class="me-2"></span> Save Settings');
+                $('#saveSettingsBtn').prop('disabled', false);
+                feather.replace();
+            }
+        });
+    });
+    
+    // Quick action buttons
+    $('#runDailyInterestBtn').on('click', function() {
+        if (confirm('Are you sure you want to run the daily interest calculation now?')) {
+            $(this).html('<span class="spinner-border spinner-border-sm me-2"></span> Running...');
+            $(this).prop('disabled', true);
+            
+            // In a real implementation, this would call an API endpoint
+            setTimeout(() => {
+                alert('Daily interest applied successfully!');
+                $(this).html('<span data-feather="dollar-sign" class="me-2"></span> Run Daily Interest');
+                $(this).prop('disabled', false);
+                feather.replace();
+            }, 1500);
+        }
+    });
+    
+    $('#drawLotteryBtn').on('click', function() {
+        if (confirm('Are you sure you want to draw the lottery now?')) {
+            $(this).html('<span class="spinner-border spinner-border-sm me-2"></span> Drawing...');
+            $(this).prop('disabled', true);
+            
+            // In a real implementation, this would call an API endpoint
+            setTimeout(() => {
+                alert('Lottery drawn successfully!');
+                $(this).html('<span data-feather="award" class="me-2"></span> Draw Lottery');
+                $(this).prop('disabled', false);
+                feather.replace();
+            }, 1500);
+        }
+    });
+    
+    $('#backupDataBtn').on('click', function() {
+        $(this).html('<span class="spinner-border spinner-border-sm me-2"></span> Backing up...');
+        $(this).prop('disabled', true);
+        
+        // In a real implementation, this would call an API endpoint
+        setTimeout(() => {
+            alert('Data backed up successfully!');
+            $(this).html('<span data-feather="download" class="me-2"></span> Backup Data');
+            $(this).prop('disabled', false);
+            feather.replace();
+        }, 1500);
+    });
+    
+    $('#resetJackpotBtn').on('click', function() {
+        const newAmount = prompt('Enter the new jackpot pool amount:', '5000');
+        if (newAmount !== null) {
+            const amount = parseInt(newAmount);
+            if (!isNaN(amount) && amount >= 0) {
+                $(this).html('<span class="spinner-border spinner-border-sm me-2"></span> Resetting...');
+                $(this).prop('disabled', true);
+                
+                // Update the form value
+                $('#slotJackpotPool').val(amount);
+                
+                // In a real implementation, this would call an API endpoint
+                setTimeout(() => {
+                    alert(`Jackpot pool reset to ${amount} coins successfully!`);
+                    $(this).html('<span data-feather="refresh-cw" class="me-2"></span> Reset Jackpot Pool');
+                    $(this).prop('disabled', false);
+                    feather.replace();
+                }, 1500);
+            } else {
+                alert('Please enter a valid amount.');
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card border-0 bg-dark shadow-sm">
+        <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">User Management</h5>
+            <div>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search by user ID" aria-label="Search" id="userSearch">
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Balance</th>
+                            <th>Savings</th>
+                            <th>Last Daily Claim</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable">
+                        {% if users %}
+                            {% for user_id, user_data in users.items() %}
+                            <tr>
+                                <td>{{ user_id }}</td>
+                                <td>{{ user_data.get('balance', 0) | int }} coins</td>
+                                <td>{{ user_data.get('savings', 0) | int }} coins</td>
+                                <td>
+                                    {% if user_data.get('last_daily_claim') %}
+                                        {{ user_data.get('last_daily_claim').replace('T', ' ').split('.')[0] }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('user_details', user_id=user_id) }}" class="btn btn-sm btn-info">
+                                        <span data-feather="eye"></span> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No users found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('userSearch');
+        const userTable = document.getElementById('userTable');
+        const rows = userTable.querySelectorAll('tr');
+        
+        searchInput.addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            rows.forEach(row => {
+                const userId = row.querySelector('td:first-child');
+                if (!userId) return;
+                
+                const content = userId.textContent.toLowerCase();
+                if (content.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
