@@ -1,0 +1,212 @@
+/* Custom styles for the Discord Bot Manager */
+
+/* Add a nice gradient background to the sidebar */
+.sidebar {
+    background: linear-gradient(to bottom, var(--bs-dark), #1a1a2e);
+}
+
+/* Smooth card transitions */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card-dashboard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Custom badges and status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-online {
+    background-color: var(--bs-success);
+    box-shadow: 0 0 8px var(--bs-success);
+    animation: pulse 2s infinite;
+}
+
+.status-offline {
+    background-color: var(--bs-danger);
+}
+
+/* Special badges for rarity levels */
+.badge-rarity {
+    padding: 0.4em 0.6em;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-common {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-uncommon {
+    background-color: #20c997;
+    color: white;
+}
+
+.badge-rare {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.badge-epic {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.badge-legendary {
+    background: linear-gradient(45deg, #ffc107, #ff8c00);
+    color: white;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 5px rgba(25, 135, 84, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+    }
+}
+
+/* Stats cards with icons */
+.stats-card-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+/* Custom chart styles */
+.chart-container {
+    position: relative;
+    height: 250px;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+}
+
+/* Custom switch for auto-refresh */
+.refresh-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.refresh-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.refresh-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.refresh-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .refresh-switch-slider {
+    background-color: var(--bs-info);
+}
+
+input:checked + .refresh-switch-slider:before {
+    transform: translateX(26px);
+}
+
+/* Custom styles for tables */
+.table-custom {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-custom thead th {
+    background-color: rgba(var(--bs-dark-rgb), 0.9);
+    border-bottom: none;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table-custom tbody tr {
+    transition: all 0.2s;
+}
+
+.table-custom tbody tr:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Custom styles for forms */
+.form-floating > label {
+    padding: 0.5rem 0.75rem;
+}
+
+.form-floating > .form-control {
+    padding: 0.75rem;
+    height: calc(3rem + 2px);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Hover effect for buttons */
+.btn {
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
