@@ -1,0 +1,15 @@
+{
+    "slot_jackpot_pool": 0.0,
+    "lottery_pot": 0.0,
+    "lottery_tickets": [],
+    "slot_jackpot_contribution": 0.1,
+    "slot_jackpot_override_chance": 0.0,
+    "initial_balance_check_done": true,
+    "community_goals_progress": {
+        "lottery_donations": 0,
+        "messages_sent": 4
+    },
+    "global_coin_boost_active": false,
+    "global_coin_boost_ends_at": null,
+    "rented_vcs": {}
+}
